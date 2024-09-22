@@ -1,4 +1,4 @@
-package sharumaki.h.f.Cache;
+package sharumaki.h.f.cache;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -20,10 +20,6 @@ public class CacheMemory {
 
     public void clearCache() {
         this.memory.clear();
-    }
-
-    public void removeFromCache(String key) {
-        this.memory.remove(key);
     }
 
     public void add(String key, String value) {

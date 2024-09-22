@@ -1,4 +1,4 @@
-package sharumaki.h.f.Cache;
+package sharumaki.h.f.cache;
 
 import com.sun.net.httpserver.HttpServer;
 
@@ -6,27 +6,26 @@ import java.net.InetSocketAddress;
 
 public class CacheCacheServerImpl implements CacheServer {
 
-    private final int port;
     CacheMemory cacheMemory = new CacheMemory();
 
-    public CacheCacheServerImpl(int port) {
-        this.port = port;
-    }
+    private final String resource = "/products";
+    private boolean status = false;
 
-    public void start() {
+    public void start(int port, String origin) {
 
         Thread thread = new Thread(() -> {
             HttpServer server;
 
             try{
-                server = HttpServer.create(new InetSocketAddress(this.port),0);
-                server.createContext("/products", new ProductsHandler("/products",this.cacheMemory));
+                server = HttpServer.create(new InetSocketAddress(port),0);
+                server.createContext("/", new GenericHandler(origin,this.cacheMemory));
 
                 server.setExecutor(null);
 
                 System.out.println("Starting server...");
                 server.start();
-                System.out.println("Server up!");
+                this.status = true;
+                System.out.println(">Server up!");
             } catch (Exception e) {
                 System.out.println("Error to create the server: " + e.getMessage());
             }
@@ -40,5 +39,10 @@ public class CacheCacheServerImpl implements CacheServer {
         System.out.println("Clearing...");
         cacheMemory.clearCache();
         System.out.println("Clear");
+    }
+
+    @Override
+    public boolean isOn() {
+        return status;
     }
 }
